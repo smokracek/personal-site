@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* syntax highlighting for MDX */
+@import "prism-one-dark.css";
+
+* {
+  overscroll-behavior-y: none;
+}
