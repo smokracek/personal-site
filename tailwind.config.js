@@ -9,6 +9,7 @@ module.exports = {
     fontFamily: {
       serif: ["Cormorant Garamond", "serif"],
       display: ["DM Serif Display", "serif"],
+      firaCode: ["Fira Code", "Menlo"],
     },
   },
   plugins: [require("@tailwindcss/typography")],

@@ -15,11 +15,11 @@ const Header: React.FunctionComponent = () => {
     useEffect(() => {
         const handler = () => {
             setShrunk((isShrunk) => {
-                if (!isShrunk && (document.body.scrollTop > 30 || document.documentElement.scrollTop > 30)) {
+                if (!isShrunk && (document.body.scrollTop > 40 || document.documentElement.scrollTop > 40)) {
                     return true
                 }
 
-                if (isShrunk && document.body.scrollTop < 4 && document.documentElement.scrollTop < 4) {
+                if (isShrunk && document.body.scrollTop < 120 && document.documentElement.scrollTop < 120) {
                     return false
                 }
 
@@ -34,7 +34,7 @@ const Header: React.FunctionComponent = () => {
     return (
         <div className={"transition-all duration-300 p-5 mb-10 bg-white w-screen flex flex-row shadow-md " + (isShrunk ? "h-12" : "h-36")}>
             <div className="flex basis-1/5 content-center">
-                <h1 className={"transition-all duration-300 self-center font-display " + (isShrunk ? "text-3xl" : "text-5xl")}>Sam Mokracek</h1>
+                <h1 className="self-center font-display text-4xl">Sam Mokracek</h1>
             </div>
             <div className="border-r-2 border-slate-200 mr-5 ml-5"></div>
             <div className="flex flex-row w-full basis-4/5 place-content-around items-center font-serif text-2xl">

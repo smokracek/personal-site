@@ -1,8 +1,8 @@
 import type { NextPage } from "next"
 import Head from "next/head"
 import Header from "./components/Header"
-// import Image from "next/image"
-// import mePic from "../public/me.png"
+import Image from "next/image"
+import mePic from "../public/me.jpeg"
 
 const Home: NextPage = () => {
   return (
@@ -16,7 +16,7 @@ const Home: NextPage = () => {
 
       <div className="flex flex-col w-1/2 h-screen self-center place-content-center">
         <div className="flex flex-row self-center h-fit justify-around items-center">
-          {/* <Image src={mePic} alt="A picture of me" className="rounded-full scale-75 shadow-xl"></Image> */}
+          <Image src={mePic} alt="A picture of me" className="rounded-full scale-75 shadow-xl"></Image>
           <h1 className="text-4xl font-display italic">
             {`Hi, I'm Sam Mokracek.`}
           </h1>
