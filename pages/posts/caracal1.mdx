@@ -1,0 +1,104 @@
+# Caracal - Building a library to enable social networking over BitTorrent
+#### 2 March 2023
+
+Starting this January I began work on creating a library I'm calling [Caracal](https://github.com/smokracek/caracal). 
+My hope is to provide facilities for implementing clients that can participate in a social network that works over the 
+peer-to-peer file sharing protocol BitTorrent. At the moment, my key goals are:
+
+    * Provide primitives for torrenting and seeding with magnet links.
+    * Provide tools for generating magnet links and torrent files for any file or bundle of files.
+    * Provide tools for communicating with and polling a repository that stores magnet links pointing to net
+    posts on the network.
+    * Provide tools for encrypting posts using public key encryption. Even though all files are available
+    to everyone when using BitTorrent, only friends/followers will be able to actually decrypt a post.
+    * Expose it all via a C interface that uses plain data objects, which will enable interoptibility and 
+    easy binding with other languages.
+
+The goal isn't to create a flashy client app (although I will make one), but rather provide all the facilities needed to create
+a client app in many different contexts.
+
+## Design Choices
+### LibTorrent
+I decided it wasn't a good idea to attempt to implement modern BitTorrent functionality myself, so I opted
+to use [LibTorrent](https://libtorrent.org/index.html). As a result, many of my Caracal functions are really
+light wrappers around LibTorrent functions that convert LibTorrent's C++ types to C types and structs. 
+
+### Opaque Types
+I also made the decision to use opaque C types. Opaque types allow me to take full control of how the client uses
+the types that Caracal works in, and also implements some pseudo-OOP functionality in C. The following is an example
+of how this is done for my `post_bundle_t` type. However, as I get deeper into this project a lot of the social 
+networking-specific functionality will need to be implemented myself.
+
+This is the public header file `include/post_bundle.h` that the client has access to:
+```c filename="post_bundle.h"
+#ifndef CARACAL_POST_BUNDLE_H
+#define CARACAL_POST_BUNDLE_H
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+    /**
+     * Holds info about a post.
+     */
+    typedef struct _post_bundle_instance_t *post_bundle_t;
+
+    /**
+     * Gets the title of the post. Derived from original post file name.
+     * @param instance A post bundle.
+     * @return The current title of the post.
+     */
+    const char *get_post_title(post_bundle_t instance);
+
+    /**
+     * Gets the magnet link for the post.
+     * @param instance A post bundle.
+     * @return The generated magnet link for the post.
+     */
+    const char *get_post_magnet(post_bundle_t instance);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+```
+Now, jumping to the implementations in `src/post_bundle.h` and `src/post_bundle.cpp`, we see that we can hide any
+and all implementation details from the client:
+```c++ filename="post_bundle.h"
+#include "../include/post_bundle.h"
+
+typedef struct _post_bundle_instance_t
+{
+    char title[256];
+    char magnet[1024];
+} *post_bundle_t;
+```
+```cpp filename="post_bundle.cpp"
+#include "post_bundle.h"
+
+const char *get_post_title(post_bundle_t instance)
+{
+    return instance->title;
+}
+
+const char *get_post_magnet(post_bundle_t instance)
+{
+    return instance->magnet;
+}
+```
+In short, the client only gets access to operations on the type we want them to, and they also don't need to mess
+with pointers or anything else besides simple methods that act on instances.
+
+### Singleton Sessions
+I'm wrapping the LibTorrent `lt::session` object in a singleton class so to keep things simple. With this method, the user
+can opaquely add magnets to torrent or seed, query the session for alerts, set storage directories, etc. The goal is to eventually
+figure out how to background this into its own thread so downloading and seeding posts are non-blocking operations.
+
+## Reflections so far
+This project has been a ton of fun, especially since I'm typically used to programming that revolves around web sites or services.
+While this isn't really systems programming, it feels much closer since I get to work in compiled languages like C and C++, and 
+I'm not just implementing another REST API. I'll be working on this for at least the remainder of my semester, so check back in for
+updates and keep an eye on the [GitHub repo](https://github.com/smokracek/caracal).
+
