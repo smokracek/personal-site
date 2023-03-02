@@ -4,7 +4,7 @@ import Header from "./components/Header"
 
 const Contact: NextPage = () => {
     return (
-      <div className="flex flex-col bg-white h-screen w-screen">
+      <div className="flex flex-col bg-gray-100 h-screen w-screen">
         <Head>
           <title>Sam Mokracek ~ Contact</title>
           <meta name="description" content="SamMokracek.com, contact" />
